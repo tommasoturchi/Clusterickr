@@ -1,6 +1,5 @@
     //
     //  tturchi_mapreduce.h
-    //  clustering
     //
     //  Created by Tommaso Turchi on 2/1/12.
     //  Copyright (c) 2012 Tommaso Turchi. All rights reserved.
@@ -11,10 +10,10 @@
 #define SIZE 1000000
 
 #include <algorithm>
-#include <stdexcept>
 #include <iostream>
 #include <list>
 #include <omp.h>
+#include <stdexcept>
 #include <vector>
 
     // Key pairs format
@@ -66,15 +65,16 @@ int mr_shm(std::list<mr_k<T2> >* (*map)(mr_k<T1>*), T3* (*reduce)(mr_k<T2>*, uns
                     for (int t = 0; t < j-i; t++) buff->value[t] = *shuffled->at(i+t).value;
                     shuffled->at(i) = *buff;
                     shuffled->erase(shuffled->begin()+i+1, shuffled->begin()+j);
-                    std::cout << i << " -> " << j << std::endl;
                 }
                 done -= j - i - 1;
                 break;
             }
         }
     output = new T3[done];
+        // Reducing phase
 #pragma omp parallel for num_threads(reducers) shared(buffsizes,output,reduce,shuffled) schedule(dynamic)
     for (int i = 0; i < done; i++) output[i] = *reduce(&shuffled->at(i), buffsizes->at(i));
+        // Cleaning data
     buffsizes->clear();
     shuffled->clear();
     return done;
