@@ -7,7 +7,7 @@
 #ifndef clustering_tturchi_mapreduce_h
 #define clustering_tturchi_mapreduce_h
 
-#define SIZE 1000000
+#define SIZE 100000
 
 #include <algorithm>
 #include <iostream>
@@ -36,7 +36,7 @@ int mr_shm(std::list<mr_k<T2> >* (*map)(mr_k<T1>*), T3* (*reduce)(mr_k<T2>*, uns
     int done = 0;
     std::list<mr_k<T2> >* current;
         // Mapping phase
-#pragma omp parallel for num_threads(mappers) shared(ilen,input,map,mappers,shuffled) reduction(+:done) firstprivate(current) schedule(dynamic)
+#pragma omp parallel for num_threads(mappers) shared(ilen,input,map,mappers,shuffled) reduction(+:done) firstprivate(current) schedule(static)
     for (int i = 0; i < ilen; i++) {
         current = map(&input[i]);
         while ((int)current->size() > 0) {

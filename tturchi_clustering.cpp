@@ -4,9 +4,9 @@
     //  Created by Tommaso Turchi on 2/1/12.
     //  Copyright (c) 2012 Tommaso Turchi. All rights reserved.
     //
-#define MAPPERS 8
-#define REDUCERS 6
-#define EPSILON 0.001
+#define MAPPERS 2
+#define REDUCERS 1
+#define EPSILON 0.000001
 
 #include <fstream>
 #include <iostream>
@@ -126,8 +126,8 @@ int main (int argc, const char * argv[])
             // do the magic
         try {
             done = mr_shm(*map, *reduce, MAPPERS, REDUCERS, data->data(), ilen, out);
-        } catch (std::runtime_error e) {
-            std::cout << e.what() << std::endl;
+        } catch (std::runtime_error ex) {
+            std::cout << ex.what() << std::endl;
         }
             // compute the distance from the old centroids
         for (int i = 0; i < clus; i++) eps += eucd(&roids->at(i), &oldroids->at(i));
